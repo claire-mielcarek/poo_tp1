@@ -1,4 +1,4 @@
-package com.ikea.catalogue;
+package tp1;
 class Produit {
 	private String cle;
 	private String nom;
