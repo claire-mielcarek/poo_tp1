@@ -6,11 +6,16 @@
 package tp1;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -37,19 +42,26 @@ public class ApplicationServeur {
      */
     public void aVosOrdres() throws IOException {
         while (true) {
+            System.out.println("a vos ordres:\n");
             Socket clientSocket = socket.accept();
-            sortie = new PrintWriter(clientSocket.getOutputStream(), true);
-            entree = new BufferedReader(
+            PrintWriter sortieConnexion = new PrintWriter(clientSocket.getOutputStream(), true);
+            BufferedReader entreeConnexion = new BufferedReader(
                     new InputStreamReader(clientSocket.getInputStream()));
-            char tmp = (char) entree.read();
+            char tmp = (char) entreeConnexion.read();
             StringBuffer cmdChars = new StringBuffer();
-            
             while(tmp != caractereArret ){
                 if( tmp != -1){
                     cmdChars.append(tmp);
+                    tmp = (char) entreeConnexion.read();
                 }
             }
+            System.out.println("cmdChars: "+cmdChars+"\n");
             traiteCommande(new Commande(new String(cmdChars)));
+            //TODO:
+            sortieConnexion.write(cmdChars+" test");
+            sortieConnexion.flush();
+            sortieConnexion.close();
+            entreeConnexion.close();
         }
     }
 
@@ -58,8 +70,15 @@ public class ApplicationServeur {
      * commande, elle appelle la méthode spécialisée      
      */
     public void traiteCommande(Commande uneCommande) {
-        System.out.println(uneCommande.getTexte());
-        sortie.write("commande effectuée");
+        System.out.println("traite cmd serveur: "+uneCommande.getTexte());
+        try {
+            sortie = new PrintWriter(new BufferedWriter(new FileWriter(new File("src\\tp1\\sortie.txt").getAbsolutePath(), true)));
+            sortie.write("commande effectuée\r\n");
+            sortie.flush();
+            sortie.close();
+            } catch (IOException ex) {
+                Logger.getLogger(ApplicationServeur.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -116,5 +135,13 @@ public class ApplicationServeur {
      * l’initialiser puis appeler aVosOrdres sur cet objet      
      */
     public static void main(String[] args) {
+        try {
+            ApplicationServeur as = new ApplicationServeur(8080);
+            System.out.println("test serveur\n");
+            as.aVosOrdres();
+            
+        } catch (IOException ex) {
+            Logger.getLogger(ApplicationServeur.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

@@ -1,0 +1,124 @@
+Debut des traitements:
+	Traitement de la commande compilation#./src/ca/uqac/registraire/Cours.java,./src/ca/uqac/registraire/Etudiant.java#./classes ...
+
+tp1.ApplicationClient$1@7852e922	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande chargement#ca.uqac.registraire.Cours ...
+
+tp1.ApplicationClient$1@4e25154f	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande creation#ca.uqac.registraire.Cours#8inf853 ...
+
+tp1.ApplicationClient$1@70dea4e	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande ecriture#8inf853#titre#Architecture des applications ...
+
+tp1.ApplicationClient$1@5c647e05	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande lecture#8inf853#titre ...
+
+tp1.ApplicationClient$1@33909752	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande creation#ca.uqac.registraire.Cours#8inf843 ...
+
+tp1.ApplicationClient$1@55f96302	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande ecriture#8inf843#titre#Systemes repartis ...
+
+tp1.ApplicationClient$1@3d4eac69	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande chargement#ca.uqac.registraire.Etudiant ...
+
+tp1.ApplicationClient$1@42a57993	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande creation#ca.uqac.registraire.Etudiant#mathilde ...
+
+tp1.ApplicationClient$1@75b84c92	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande ecriture#mathilde#nom#Mathilde Boivin ...
+
+tp1.ApplicationClient$1@6bc7c054	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande creation#ca.uqac.registraire.Etudiant#raymond ...
+
+tp1.ApplicationClient$1@232204a1	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande ecriture#raymond#nom#Raymond Sauve ...
+
+tp1.ApplicationClient$1@4aa298b7	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande fonction#8inf853#getNote#ca.uqac.registraire.Etudiant:ID(mathilde) ...
+
+tp1.ApplicationClient$1@7d4991ad	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande fonction#mathilde#inscrisDansCours#ca.uqac.registraire.Cours:ID(8inf853) ...
+
+tp1.ApplicationClient$1@28d93b30	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande fonction#8inf853#attributeNote#ca.uqac.registraire.Etudiant:ID(mathilde),float:3.7 ...
+
+tp1.ApplicationClient$1@1b6d3586	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande fonction#8inf853#getNote#ca.uqac.registraire.Etudiant:ID(mathilde) ...
+
+tp1.ApplicationClient$1@4554617c	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande fonction#mathilde#inscrisDansCours#ca.uqac.registraire.Cours:ID(8inf843) ...
+
+tp1.ApplicationClient$1@74a14482	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande fonction#8inf843#attributeNote#ca.uqac.registraire.Etudiant:ID(mathilde),float:4.0 ...
+
+tp1.ApplicationClient$1@1540e19d	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande fonction#mathilde#getMoyenne# ...
+
+tp1.ApplicationClient$1@677327b6	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande fonction#raymond#inscrisDansCours#ca.uqac.registraire.Cours:ID(8inf853) ...
+
+tp1.ApplicationClient$1@14ae5a5	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande fonction#raymond#inscrisDansCours#ca.uqac.registraire.Cours:ID(8inf843) ...
+
+tp1.ApplicationClient$1@7f31245a	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande fonction#8inf853#attributeNote#ca.uqac.registraire.Etudiant:ID(raymond),float:3.0 ...
+
+tp1.ApplicationClient$1@6d6f6e28	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande fonction#8inf843#attributeNote#ca.uqac.registraire.Etudiant:ID(raymond),float:2.7 ...
+
+tp1.ApplicationClient$1@135fbaa4	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande fonction#mathilde#getMoyenne# ...
+
+tp1.ApplicationClient$1@45ee12a7	Commande: 	Attribut(s): 	Resultat: 
+
+	Traitement de la commande fonction#8inf853#toString# ...
+
+tp1.ApplicationClient$1@330bedb4	Commande: 	Attribut(s): 	Resultat: 
+
+Fin des traitements
+commande effectuée
+commande effectuée
+commande effectuée
+commande effectuée
+commande effectuée
+commande effectuée
+commande effectuée
+commande effectuée
+commande effectuée
+commande effectuée
+commande effectuée
+commande effectuée
+commande effectuée
+commande effectuée
+commande effectuée
+commande effectuée
+commande effectuée
+commande effectuée
+commande effectuée
+commande effectuée
+commande effectuée
+commande effectuée
