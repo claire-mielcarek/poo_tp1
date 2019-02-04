@@ -1,7 +1,9 @@
 /build/
+/build/classes/
 /dist/
 /src/ca/uqac/registraire/Cours.class
 /src/ca/uqac/registraire/Etudiant.class
 /src/ca/uqac/registraire/Produit.class
 /src/tp1/sortie.txt
 /nbproject/private/private.xml
+*.class
