@@ -54,9 +54,11 @@ public class ApplicationServeur {
      */
     public void aVosOrdres() throws IOException {
         while (true) {
-            System.out.println("\nA vos ordres:\n");
+            System.out.println("serveur> A vos ordres:");
             Socket clientSocket = socket.accept();
+            //envoie le résultat au client
             sortie = new PrintWriter(clientSocket.getOutputStream(), true);
+            //récupère la ligne de commande envoyée par le client
             entree = new BufferedReader(
                     new InputStreamReader(clientSocket.getInputStream()));
             char tmp = (char) entree.read();
@@ -67,13 +69,9 @@ public class ApplicationServeur {
                     tmp = (char) entree.read();
                 }
             }
-            System.out.println("cmdChars: " + cmdChars + "\n");
+            //exécution de la commande
             traiteCommande(new Commande(new String(cmdChars)));
-            //TODO:
-            sortie.write(cmdChars + " test");
-            sortie.flush();
-            sortie.close();
-            entree.close();
+            System.out.println("serveur> Ordre exécuté");
         }
     }
 
@@ -82,7 +80,7 @@ public class ApplicationServeur {
      * commande, elle appelle la méthode spécialisée      
      */
     public void traiteCommande(Commande uneCommande) {
-        System.out.println("traite cmd serveur: " + uneCommande.getTexte());
+        System.out.println("serveur> " + uneCommande.getTexte());
         switch (uneCommande.getType()) {
             case COMPILATION:
                 if (uneCommande.getArguments().size() == 2) {
@@ -114,16 +112,10 @@ public class ApplicationServeur {
                 }
                 break;
             default:
-            /*
-                    sortie = new PrintWriter(new BufferedWriter(new FileWriter(new File("src\\tp1\\sortie.txt").getAbsolutePath(), true)));
-                    sortie.write("commande effectuée\r\n");
-                    sortie.flush();
-                    sortie.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(ApplicationServeur.class.getName()).log(Level.SEVERE, null, ex);
-                }
-             */
+
         }
+        sortie.write(caractereArret);
+        sortie.flush();   
     }
     
     private Class trouverClasse(String nom) {
@@ -261,7 +253,7 @@ public class ApplicationServeur {
     public static void main(String[] args) {
         try {
             ApplicationServeur as = new ApplicationServeur(8080);
-            System.out.println("test serveur\n");
+            System.out.println("Connexion serveur ...\n");
             as.aVosOrdres();
             
         } catch (IOException ex) {
@@ -270,12 +262,16 @@ public class ApplicationServeur {
     }
     
     private void envoyerMessageErreur(String string) {
+        sortie.write("\r\n\t\t");
+        sortie.flush();
         sortie.write("E : " + string);
         sortie.flush();
         System.out.println("E : " + string);
     }
     
     private void envoyerMessageSucces(String string) {
+        sortie.write("\r\n\t\t");
+        sortie.flush();
         sortie.write("S : " + string);
         sortie.flush();
         System.out.println("S : " + string);

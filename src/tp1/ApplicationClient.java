@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,10 +35,6 @@ public class ApplicationClient {
     }
 
     private ApplicationClient() {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        
-        
-        
     }
 
     /**
@@ -75,38 +70,46 @@ public class ApplicationClient {
     public Object traiteCommande(Commande uneCommande) throws IOException {
 
         Socket echoSocket = new Socket(hostName, port);
+        //envoie commande au serveur
         PrintWriter sortieConnexion = new PrintWriter(echoSocket.getOutputStream(), true);
-        BufferedReader entreeConnexion = new BufferedReader(
-                new InputStreamReader(echoSocket.getInputStream()));
         if (uneCommande.getTexte() != null)
         {
             sortieConnexion.write(uneCommande.getTexte());
             sortieConnexion.flush();
             sortieConnexion.write(caractereArret);
             sortieConnexion.flush();
-            sortieConnexion.close();
         }
-        //Récupérer le résultat sur entreeConnexion
-        //TODO:
-        //System.out.println("retour serveur: "+ entreeConnexion.read());
         
-        Object object = new Object(){
+        //réception du résultat du serveur
+        BufferedReader entreeConnexion = new BufferedReader(
+                new InputStreamReader(echoSocket.getInputStream()));
+        
+        char tmp = (char) entreeConnexion.read();
+        StringBuffer resultatServeur = new StringBuffer();
+        while (tmp != caractereArret) {
+            if (tmp != -1) {
+                resultatServeur.append(tmp);
+                tmp = (char) entreeConnexion.read();
+            }
+        }
+        System.out.println("Retour serveur:" + new String(resultatServeur));
+        
+        //création de l'objet de retour
+        Object objetResultat = new Object(){
+            @Override
             public String toString() {
-                String resultat =  super.toString();
-                resultat +=  "\tCommande: " ;
-                resultat +=  "\tAttribut(s): ";   
-                resultat +=  "\tResultat: ";   
-                return resultat;  
+                String resultat = "" + resultatServeur + "\r\n"; 
+                return resultat;
             }
         };
-        //Fermer la connexion
+        //Fermer la connexion socket
         try {
             echoSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
             echoSocket = null;
         }
-        return object;
+        return objetResultat;
     }
 
     /**
@@ -124,11 +127,10 @@ public class ApplicationClient {
         while (prochaine.getArguments() != null) {
         sortie.println("\tTraitement de la commande " + prochaine.getTexte() + " ...");
         sortie.flush();
+        System.out.println("client> " + prochaine.getTexte());
         Object resultat = traiteCommande(prochaine);
-
-        sortie.println("\r\n" + resultat.toString() + "\r\n");
+        sortie.println("\t\tRésultat:" + resultat);
         sortie.flush();
-        System.out.println(prochaine.getTexte());
         prochaine = saisisCommande(commandes);
         }
     sortie.println("Fin des traitements");
@@ -150,30 +152,27 @@ public class ApplicationClient {
     public static void main(String[] args) {
 
         try {
-            
+            //initialisation du client
             ApplicationClient ac = new ApplicationClient();
             //hostname
             ac.hostName = "localhost";
             //numero port
             ac.port = 8080;
-            //nom fichier commandes
-            //nom fichier sortie
-            ac.initialise(new File("src\\tp1\\commandes.txt").getAbsolutePath(), new File("src\\tp1\\sortie.txt").getAbsolutePath());
-            System.out.println("test client\n");
+            //noms du fichier de commandes et du fichier de sortie
+            ac.initialise(new File("src\\tp1\\commandes.txt").getAbsolutePath(),
+                        new File("src\\tp1\\sortie.txt").getAbsolutePath());
+            System.out.println("Connexion client ...\n");
 
-            //executer scenario
-            //TODO: ordre des applications des méthodes
-            Thread thread = new Thread("New Thread") {
+
+            /*Thread thread = new Thread("New Thread") {
                 public void run(){ 	
                     ApplicationServeur.main(args);
                 }
-            }; 
+            };
+            thread.start();*/
             
-            thread.start();
-            
+            //exécution du scénario, connexion du client
             ac.scenario();
-
-            
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ApplicationClient.class.getName()).log(Level.SEVERE, null, ex);
         }
