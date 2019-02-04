@@ -35,8 +35,22 @@ public class ApplicationClient {
     }
 
     private ApplicationClient() {
+        
     }
 
+    /**
+    * Constructeur de la classe: initialise les attributs
+    */
+    private ApplicationClient(String fichCommandes, String fichSortie, String hostname, int port) {
+        
+        this.hostName = hostname;
+        this.port = port;
+        try {
+            this.initialise(fichCommandes, fichSortie);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ApplicationClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     /**
      * prend le fichier contenant la liste des commandes, et le charge dans une
      * variable du type Commande qui est retournée      
@@ -151,31 +165,20 @@ public class ApplicationClient {
      */
     public static void main(String[] args) {
 
-        try {
-            //initialisation du client
-            ApplicationClient ac = new ApplicationClient();
-            //hostname
-            ac.hostName = "localhost";
-            //numero port
-            ac.port = 8080;
-            //noms du fichier de commandes et du fichier de sortie
-            ac.initialise(new File("src\\tp1\\commandes.txt").getAbsolutePath(),
-                        new File("src\\tp1\\sortie.txt").getAbsolutePath());
-            System.out.println("Connexion client ...\n");
+        //initialisation du client: noms du fichier de commandes et du fichier de sortie, hostname et numéro de port
+        ApplicationClient ac = new ApplicationClient(new File("src\\tp1\\commandes.txt").getAbsolutePath(),
+                    new File("src\\tp1\\sortie.txt").getAbsolutePath(),"localhost", 8080);
 
+        System.out.println("Connexion client ...\n");
 
-            /*Thread thread = new Thread("New Thread") {
-                public void run(){ 	
-                    ApplicationServeur.main(args);
-                }
-            };
-            thread.start();*/
-            
-            //exécution du scénario, connexion du client
-            ac.scenario();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(ApplicationClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+        /*Thread thread = new Thread("New Thread") {
+            public void run(){ 	
+                ApplicationServeur.main(args);
+            }
+        };
+        thread.start();*/
+
+        //exécution du scénario, connexion du client
+        ac.scenario();
     }
 }

@@ -83,7 +83,6 @@ public class ApplicationServeur {
         System.out.println("serveur> " + uneCommande.getTexte());
         switch (uneCommande.getType()) {
             case COMPILATION:
-                // Le prof n'a pas l'air de gérer le 2ème paramètre ?
                 traiterCompilation(uneCommande.getArguments().get(0));
                 break;
             case CHARGEMENT:
@@ -271,7 +270,7 @@ public class ApplicationServeur {
             if (ret == null) {
                 envoyerMessageSucces("La méthode a été exécutée");
             } else {
-                envoyerMessageSucces("La méthode a renvoyé " + ret);
+                envoyerMessageSucces("La méthode a renvoyé \"" + ret+"\"");
             }
         } catch (NoSuchMethodException ex) {
             envoyerMessageErreur("Méthode inexistante");
@@ -306,7 +305,7 @@ public class ApplicationServeur {
     private void envoyerMessageErreur(String string) {
         sortie.write("\r\n\t\t");
         sortie.flush();
-        sortie.write("E : " + string);
+        sortie.write("Erreur : " + string);
         sortie.flush();
         System.out.println("E : " + string);
     }
@@ -314,7 +313,7 @@ public class ApplicationServeur {
     private void envoyerMessageSucces(String string) {
         sortie.write("\r\n\t\t");
         sortie.flush();
-        sortie.write("S : " + string);
+        sortie.write("Succès : " + string);
         sortie.flush();
         System.out.println("S : " + string);
     }
@@ -384,18 +383,6 @@ public class ApplicationServeur {
         for (int i = 0; i < types.size(); i++) {
             ret[i] = types.get(i);
         }
-        return ret;
-    }
-
-    private String toString(Object[] valeurs) {
-        String ret = "[ ";
-        for (int i = 0; i < valeurs.length; i++) {
-            ret += valeurs[i].toString();
-            if (i < (valeurs.length - 1)) {
-                ret += " , ";
-            }
-        }
-        ret += " ]";
         return ret;
     }
 
