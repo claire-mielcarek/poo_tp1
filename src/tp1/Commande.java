@@ -10,51 +10,53 @@ import java.util.ArrayList;
 
 /**
  *
- * @author clair
+ * @author Claire & Tiffany
  */
 public class Commande implements Serializable {
 
     private String texte;
-    private CommandType type;
+    private CommandeType type;
     private ArrayList<String> arguments = new ArrayList<>();
 
     public Commande(String commande) {
         texte = commande;
         int nbArgs = 1;
         if (commande != null) {
-            texte = new String(commande);
+            texte = commande;
             String[] words = separation(commande);
             switch (words[0]) {
                 case ("chargement"):
-                    type = CommandType.CHARGEMENT;
+                    type = CommandeType.CHARGEMENT;
                     nbArgs = 1;
                     break;
                 case ("compilation"):
-                    type = CommandType.COMPILATION;
+                    type = CommandeType.COMPILATION;
                     nbArgs = 2;
                     break;
                 case ("creation"):
-                    type = CommandType.CREATION;
+                    type = CommandeType.CREATION;
                     nbArgs = 2;
                     break;
                 case ("ecriture"):
-                    type = CommandType.ECRITURE;
+                    type = CommandeType.ECRITURE;
                     nbArgs = 3;
                     break;
                 case ("lecture"):
-                    type = CommandType.LECTURE;
+                    type = CommandeType.LECTURE;
                     nbArgs = 2;
                     break;
                 case ("fonction"):
-                    type = CommandType.FONCTION;
+                    type = CommandeType.FONCTION;
                     nbArgs = 3;
                     break;
                 default:
-                    type = CommandType.ERROR;
+                    type = CommandeType.ERROR;
             }
 
+            //Le nombre doit être nbArgs plus un, puisqu'il faut le bon nombre
+            //d'arguments ET le type de la commande
             if (words.length != nbArgs + 1) {
-                type = CommandType.ERROR;
+                type = CommandeType.ERROR;
             }
 
             for (int i = 1; i < words.length; i++) {
@@ -62,11 +64,11 @@ public class Commande implements Serializable {
             }
         } else {
             this.arguments = null;
-            type = CommandType.ERROR;
+            type = CommandeType.ERROR;
         }
     }
 
-    public CommandType getType() {
+    public CommandeType getType() {
         return type;
     }
 
@@ -78,14 +80,20 @@ public class Commande implements Serializable {
         return texte;
     }
 
+    /**
+     * Fonction permettant de prendre en compte les commandes de type FONCTION
+     * dans lesquelles il n'y a pas d'argument (la méthode split supprime
+     * l'argument au lieu de mettre un argument vide)
+     *
+     * @param commande La commande à parser
+     * @return Le tableau des différents strings composant la commande
+     */
     private String[] separation(String commande) {
         String[] res;
         String[] words = commande.split("#");
         if (commande.endsWith("#")) {
             res = new String[words.length + 1];
-            for (int i = 0; i < words.length; i++) {
-                res[i] = words[i];
-            }
+            System.arraycopy(words, 0, res, 0, words.length);
             res[words.length] = "";
         } else {
             res = words;

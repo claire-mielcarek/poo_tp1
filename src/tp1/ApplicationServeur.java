@@ -24,16 +24,16 @@ import javax.tools.ToolProvider;
 
 /**
  *
- * @author clair
+ * @author Claire & Tiffany
  */
 public class ApplicationServeur {
 
-    private ServerSocket socket;
+    private final ServerSocket socket;
     private PrintWriter sortie;
     private BufferedReader entree;
-    private ArrayList<Class> classesChargees;
+    private final ArrayList<Class> classesChargees;
     Hashtable<String, Object> instances;
-    private char caractereArret = '&';
+    private final char caractereArret = '&';
 
     /**
      * prend le numéro de port, crée un SocketServer sur le port      
@@ -101,9 +101,15 @@ public class ApplicationServeur {
                 envoyerMessageErreur("Commande invalide");
         }
         sortie.write(caractereArret);
-        sortie.flush();   
+        sortie.flush();
     }
 
+    /**
+     * Renvoie la classe chargée recherchée
+     *
+     * @param nom le nom de la classe désirée
+     * @return la classe correspondante ou null si celle-ci n'a pas été chargée
+     */
     private Class trouverClasse(String nom) {
         Class ret = null;
         int i = 0;
@@ -117,13 +123,13 @@ public class ApplicationServeur {
     }
 
     /**
-     * traiterLecture : traite la lecture d’un attribut. Renvoies le résultat
-     * par le socket
+     * traiterLecture : traite la lecture d’un attribut. Renvoie le résultat par
+     * le socket
      */
     public void traiterLecture(Object pointeurObjet, String attribut) {
         try {
             Field champ = pointeurObjet.getClass().getDeclaredField(attribut);
-            Object ret = null;
+            Object ret;
             if (champ.isAccessible()) {
                 ret = champ.get(pointeurObjet);
             } else {
@@ -134,24 +140,20 @@ public class ApplicationServeur {
                 ret = getter.invoke(pointeurObjet);
             }
             envoyerMessageSucces("Le champ " + attribut + " vaut " + ret);
-        } catch (NoSuchFieldException ex) {
+        } catch (NoSuchFieldException | IllegalArgumentException ex) {
             envoyerMessageErreur("Champ inexistant");
-        } catch (SecurityException ex) {
+        } catch (SecurityException | InvocationTargetException ex) {
             envoyerMessageErreur("Problème lors de la lecture");
-        } catch (IllegalArgumentException ex) {
-            envoyerMessageErreur("Champ inexistant");
         } catch (IllegalAccessException ex) {
             envoyerMessageErreur("Champ inaccessible");
         } catch (NoSuchMethodException ex) {
             envoyerMessageErreur("Lecture impossible");
-        } catch (InvocationTargetException ex) {
-            envoyerMessageErreur("Problème lors de la lecture");
         }
     }
 
     /**
-     * traiterEcriture : traite l’écriture d’un attribut. Confirmes au client
-     * que l’écriture s’est faite correctement.      
+     * traiterEcriture : traite l’écriture d’un attribut. Confirme au client que
+     * l’écriture s’est faite correctement.      
      */
     public void traiterEcriture(Object pointeurObjet, String attribut, Object valeur) {
         try {
@@ -169,16 +171,10 @@ public class ApplicationServeur {
             envoyerMessageSucces("Attribut modifié");
         } catch (NoSuchFieldException e) {
             envoyerMessageErreur("Attribut inexistant");
-        } catch (IllegalArgumentException ex) {
-            envoyerMessageErreur("Problème lors de l'écriture");
-        } catch (IllegalAccessException ex) {
+        } catch (IllegalArgumentException | IllegalAccessException | SecurityException | InvocationTargetException ex) {
             envoyerMessageErreur("Problème lors de l'écriture");
         } catch (NoSuchMethodException ex) {
             envoyerMessageErreur("Ecriture impossible");
-        } catch (SecurityException ex) {
-            envoyerMessageErreur("Problème lors de l'écriture");
-        } catch (InvocationTargetException ex) {
-            envoyerMessageErreur("Problème lors de l'écriture");
         }
     }
 
@@ -192,13 +188,7 @@ public class ApplicationServeur {
                 Object instance = classeDeLobjet.newInstance();
                 instances.put(identificateur, instance);
                 envoyerMessageSucces("Objet " + identificateur + " créé");
-            } catch (SecurityException e) {
-                envoyerMessageErreur("L'instanciation a échoué");
-            } catch (IllegalArgumentException e) {
-                envoyerMessageErreur("L'instanciation a échoué");
-            } catch (InstantiationException e) {
-                envoyerMessageErreur("L'instanciation a échoué");
-            } catch (IllegalAccessException e) {
+            } catch (SecurityException | IllegalArgumentException | InstantiationException | IllegalAccessException e) {
                 envoyerMessageErreur("L'instanciation a échoué");
             }
         } else {
@@ -215,7 +205,7 @@ public class ApplicationServeur {
             Class classe = Class.forName(nomQualifie);
             classesChargees.add(classe);
             envoyerMessageSucces("Classe chargée : " + classe);
-        } catch (Exception e) {
+        } catch (ClassNotFoundException e) {
             envoyerMessageErreur("Classe non chargée");
         }
     }
@@ -228,11 +218,16 @@ public class ApplicationServeur {
      */
     public void traiterCompilation(String cheminRelatifFichierSource) {
         String[] fichiers = cheminRelatifFichierSource.split(",");
-        for (int i = 0; i < fichiers.length; i++) {
-            compiler(fichiers[i]);
+        for (String fichier : fichiers) {
+            compiler(fichier);
         }
     }
 
+    /**
+     * Compile un fichier source
+     *
+     * @param fichier le chemin absolu vers le fichier à compiler
+     */
     private void compiler(String fichier) {
 
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
@@ -267,18 +262,16 @@ public class ApplicationServeur {
             if (ret == null) {
                 envoyerMessageSucces("La méthode a été exécutée");
             } else {
-                envoyerMessageSucces("La méthode a renvoyé \"" + ret+"\"");
+                envoyerMessageSucces("La méthode a renvoyé \"" + ret + "\"");
             }
         } catch (NoSuchMethodException ex) {
             envoyerMessageErreur("Méthode inexistante");
-        } catch (SecurityException ex) {
+        } catch (SecurityException | InvocationTargetException ex) {
             envoyerMessageErreur("Problème lors de l'exécution");
         } catch (IllegalAccessException ex) {
             envoyerMessageErreur("Méthode innaccessible");
         } catch (IllegalArgumentException ex) {
             envoyerMessageErreur("Argument illégal");
-        } catch (InvocationTargetException ex) {
-            envoyerMessageErreur("Problème lors de l'exécution");
         }
     }
 
@@ -299,6 +292,11 @@ public class ApplicationServeur {
         }
     }
 
+    /**
+     * Envoie un message d'erreur au client
+     *
+     * @param string le message à envoyer
+     */
     private void envoyerMessageErreur(String string) {
         sortie.write("\r\n\t\t");
         sortie.flush();
@@ -307,6 +305,12 @@ public class ApplicationServeur {
         System.out.println("E : " + string);
     }
 
+    /**
+     * Envoie un message au client, le message correspondant à une action
+     * effectuée
+     *
+     * @param string le message à envoyer
+     */
     private void envoyerMessageSucces(String string) {
         sortie.write("\r\n\t\t");
         sortie.flush();
@@ -348,28 +352,39 @@ public class ApplicationServeur {
                     // Le seul autre type possible est String
                     valeurs.add(argStructure[1]);
                 } else {
-                    envoyerMessageErreur("");
+                    //On ne gère pas les arguments d'autres types
+                    envoyerMessageErreur("Type non géré");
                 }
             }
         }
         traiterAppel(instance, nomFonction, arrayListVersArray(types), valeurs.toArray());
     }
 
+    /**
+     * @param types tableau contenant les noms des classes à chercher
+     * @return le tableau des classes correspondants aux noms donnés
+     */
     private Class[] trouverClasses(String[] types) {
         Class c;
         Class[] classes = new Class[types.length];
         for (int i = 0; i < types.length; i++) {
-            if (types[i].equals("float")) {
-                classes[i] = float.class;
-            } else if (types[i].equals("String")) {
-                classes[i] = String.class;
-            } else {
-                c = trouverClasse(types[i]);
-                if (c != null) {
-                    classes[i] = c;
-                } else {
-                    envoyerMessageErreur("Type inexistant");
-                }
+            //On gère d'abord les types primitifs pris en compte
+            switch (types[i]) {
+                case "float":
+                    classes[i] = float.class;
+                    break;
+                case "String":
+                    classes[i] = String.class;
+                    break;
+                default:
+                    //Puis on cherche parmis les classes chargées
+                    c = trouverClasse(types[i]);
+                    if (c != null) {
+                        classes[i] = c;
+                    } else {
+                        envoyerMessageErreur("Type inexistant");
+                    }
+                    break;
             }
         }
         return classes;

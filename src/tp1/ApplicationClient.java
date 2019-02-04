@@ -1,4 +1,4 @@
-    /*
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author clair
+ * @author Claire & Tiffany
  */
 public class ApplicationClient {
 
@@ -35,14 +35,14 @@ public class ApplicationClient {
     }
 
     private ApplicationClient() {
-        
+
     }
 
     /**
-    * Constructeur de la classe: initialise les attributs
-    */
+     * Constructeur de la classe: initialise les attributs
+     */
     private ApplicationClient(String fichCommandes, String fichSortie, String hostname, int port) {
-        
+
         this.hostName = hostname;
         this.port = port;
         try {
@@ -51,6 +51,7 @@ public class ApplicationClient {
             Logger.getLogger(ApplicationClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     /**
      * prend le fichier contenant la liste des commandes, et le charge dans une
      * variable du type Commande qui est retournée      
@@ -66,8 +67,7 @@ public class ApplicationClient {
     public void initialise(String fichCommandes, String fichSortie) throws FileNotFoundException {
         try {
             sortie = new PrintWriter(new FileWriter(fichSortie));
-        } catch (Exception ec) {
-            ec.printStackTrace();
+        } catch (IOException ec) {
         }
 
         commandes = new BufferedReader(new FileReader(fichCommandes));
@@ -86,18 +86,17 @@ public class ApplicationClient {
         Socket echoSocket = new Socket(hostName, port);
         //envoie commande au serveur
         PrintWriter sortieConnexion = new PrintWriter(echoSocket.getOutputStream(), true);
-        if (uneCommande.getTexte() != null)
-        {
+        if (uneCommande.getTexte() != null) {
             sortieConnexion.write(uneCommande.getTexte());
             sortieConnexion.flush();
             sortieConnexion.write(caractereArret);
             sortieConnexion.flush();
         }
-        
+
         //réception du résultat du serveur
         BufferedReader entreeConnexion = new BufferedReader(
                 new InputStreamReader(echoSocket.getInputStream()));
-        
+
         char tmp = (char) entreeConnexion.read();
         StringBuffer resultatServeur = new StringBuffer();
         while (tmp != caractereArret) {
@@ -107,12 +106,12 @@ public class ApplicationClient {
             }
         }
         System.out.println("Retour serveur:" + new String(resultatServeur));
-        
+
         //création de l'objet de retour
-        Object objetResultat = new Object(){
+        Object objetResultat = new Object() {
             @Override
             public String toString() {
-                String resultat = "" + resultatServeur + "\r\n"; 
+                String resultat = "" + resultatServeur + "\r\n";
                 return resultat;
             }
         };
@@ -120,7 +119,6 @@ public class ApplicationClient {
         try {
             echoSocket.close();
         } catch (IOException e) {
-            e.printStackTrace();
             echoSocket = null;
         }
         return objetResultat;
@@ -133,29 +131,27 @@ public class ApplicationClient {
      * uneCommande).      
      */
     public void scenario() {
-    sortie.println("Debut des traitements:");
-    sortie.flush();
-    Commande prochaine;
-    try {
-        prochaine = saisisCommande(commandes);
-        while (prochaine.getArguments() != null) {
-        sortie.println("\tTraitement de la commande " + prochaine.getTexte() + " ...");
+        sortie.println("Debut des traitements:");
         sortie.flush();
-        System.out.println("client> " + prochaine.getTexte());
-        Object resultat = traiteCommande(prochaine);
-        sortie.println("\t\tRésultat:" + resultat);
-        sortie.flush();
-        prochaine = saisisCommande(commandes);
+        Commande prochaine;
+        try {
+            prochaine = saisisCommande(commandes);
+            while (prochaine.getArguments() != null) {
+                sortie.println("\tTraitement de la commande " + prochaine.getTexte() + " ...");
+                sortie.flush();
+                System.out.println("client> " + prochaine.getTexte());
+                Object resultat = traiteCommande(prochaine);
+                sortie.println("\t\tRésultat:" + resultat);
+                sortie.flush();
+                prochaine = saisisCommande(commandes);
+            }
+            sortie.println("Fin des traitements");
+            sortie.flush();
+            sortie.close();
+        } catch (IOException ex) {
+            Logger.getLogger(ApplicationClient.class.getName()).log(Level.SEVERE, null, ex);
         }
-    sortie.println("Fin des traitements");
-    sortie.flush();
-    sortie.close();
-    } catch (IOException ex) {
-        Logger.getLogger(ApplicationClient.class.getName()).log(Level.SEVERE, null, ex);
     }
-  }
-    
-    
 
     /**
      * programme principal. Prend 4 arguments: 1) “hostname” du serveur, 2)
@@ -167,16 +163,9 @@ public class ApplicationClient {
 
         //initialisation du client: noms du fichier de commandes et du fichier de sortie, hostname et numéro de port
         ApplicationClient ac = new ApplicationClient(new File("src\\tp1\\commandes.txt").getAbsolutePath(),
-                    new File("src\\tp1\\sortie.txt").getAbsolutePath(),"localhost", 8080);
+                new File("src\\tp1\\sortie.txt").getAbsolutePath(), "localhost", 8080);
 
         System.out.println("Connexion client ...\n");
-
-        /*Thread thread = new Thread("New Thread") {
-            public void run(){ 	
-                ApplicationServeur.main(args);
-            }
-        };
-        thread.start();*/
 
         //exécution du scénario, connexion du client
         ac.scenario();

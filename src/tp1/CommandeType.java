@@ -7,9 +7,9 @@ package tp1;
 
 /**
  *
- * @author clair
+ * @author Claire & Tiffany
  */
-public enum CommandType {
+public enum CommandeType {
     COMPILATION,
     CHARGEMENT,
     CREATION,
