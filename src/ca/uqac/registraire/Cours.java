@@ -1,4 +1,5 @@
-package tp1;
+package ca.uqac.registraire;
+
 import java.util.*;
 
 /**

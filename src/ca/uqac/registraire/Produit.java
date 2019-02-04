@@ -1,4 +1,4 @@
-package tp1;
+package ca.uqac.registraire;
 class Produit {
 	private String cle;
 	private String nom;
